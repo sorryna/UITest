@@ -23,11 +23,7 @@ namespace UITest.Hooks
         public async Task BeforeScenario()
         {
             var playwright = await Playwright.CreateAsync();
-            var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions 
-            {
-                Headless = false,
-                Timeout = 2000
-            });
+            var browser = await playwright.Chromium.LaunchAsync();
             scenarioContext.Set(browser);
 
             var loginPage = new LoginPageObject(browser);
