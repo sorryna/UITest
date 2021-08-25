@@ -1,4 +1,5 @@
-﻿Feature: Login 
+﻿@login
+Feature: Login 
 	User can login website
 
 Scenario: User use right username and password

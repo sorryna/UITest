@@ -1,45 +1,60 @@
-﻿ using System;
+﻿using FluentAssertions;
+using Microsoft.Playwright;
+using System;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
+using UITest.PageObject;
 
 namespace UITest.Steps
 {
     [Binding]
     public class LoginSteps
     {
-        [Given(@"a logged out user")]
-        public void GivenALoggedOutUser()
+        private readonly LoginPageObject _pageObject;
+        public LoginSteps(ScenarioContext scenarioContext)
         {
-            ScenarioContext.Current.Pending();
+            _pageObject = scenarioContext.Get<LoginPageObject>();
+        }
+
+        [Given(@"a logged out user")]
+        public async Task GivenALoggedOutUser()
+        {
+            await _pageObject.NavigateAsync();
         }
         
         [When(@"the user add right username")]
-        public void WhenTheUserAddRightUsername()
+        public async Task WhenTheUserAddRightUsername()
         {
-            ScenarioContext.Current.Pending();
-        }
-        
-        [When(@"the user add wrong username")]
-        public void WhenTheUserAddWrongUsername()
-        {
-            ScenarioContext.Current.Pending();
+            await _pageObject.SetUsername("sorry@gmail.com");
+            await _pageObject.SetPassword("1111");
+            await _pageObject.ClickLoginButton();
         }
         
         [Then(@"they log in successfully")]
         public void ThenTheyLogInSuccessfully()
         {
-            ScenarioContext.Current.Pending();
+            _pageObject.Page.Url.Should().EndWith("logged-in");
+        }
+
+        [When(@"the user add wrong username")]
+        public async Task WhenTheUserAddWrongUsername()
+        {
+            await _pageObject.SetUsername("sorryna@gmail.com");
+            await _pageObject.SetPassword("1234");
+            await _pageObject.ClickLoginButton();
         }
         
         [Then(@"the user is not logged in")]
         public void ThenTheUserIsNotLoggedIn()
         {
-            ScenarioContext.Current.Pending();
+            _pageObject.Page.Url.Should().NotEndWith("logged-in");
         }
         
         [Then(@"they see an error message")]
-        public void ThenTheySeeAnErrorMessage()
+        public async Task ThenTheySeeAnErrorMessage()
         {
-            ScenarioContext.Current.Pending();
+            var errorMessage = await _pageObject.GetErrorMessage();
+            errorMessage.Should().Be("Wrong Username and Password");
         }
     }
 }
