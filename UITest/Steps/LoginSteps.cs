@@ -31,8 +31,10 @@ namespace UITest.Steps
         }
         
         [Then(@"they log in successfully")]
-        public void ThenTheyLogInSuccessfully()
+        public async Task ThenTheyLogInSuccessfully()
         {
+            //await Task.Delay(2000);
+            await _pageObject.Page.WaitForTimeoutAsync(2000);
             _pageObject.Page.Url.Should().EndWith("logged-in");
         }
 

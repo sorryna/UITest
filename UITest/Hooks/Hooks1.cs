@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright;
+﻿using BoDi;
+using Microsoft.Playwright;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,11 +24,25 @@ namespace UITest.Hooks
         public async Task BeforeScenario()
         {
             var playwright = await Playwright.CreateAsync();
-            var browser = await playwright.Chromium.LaunchAsync();
+            var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions 
+            {
+                Headless = false,
+                Timeout = 2000
+            });
             scenarioContext.Set(browser);
+            scenarioContext.Set(playwright);
 
             var loginPage = new LoginPageObject(browser);
             scenarioContext.Set(loginPage);
+        }
+
+        [AfterScenario]
+        public async Task AfterScenario()
+        {
+            var xxx = scenarioContext.Get<IBrowser>();
+            await xxx.CloseAsync();
+            var playwright = scenarioContext.Get<IPlaywright>();
+            playwright.Dispose();
         }
     }
 }
